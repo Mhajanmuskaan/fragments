@@ -11,5 +11,8 @@
     "url": "git+https://github.com/Mhajanmuskaan/fragments.git"
   },
   "author": "Muskaan Mahajan",
-  "license": "UNLICENSED"
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "prettier": "3.8.3"
+  }
 }
