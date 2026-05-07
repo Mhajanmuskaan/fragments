@@ -1,38 +1,28 @@
 # fragments
 
-Fragments back-end API built with Node.js and Express.
+Backend API project built using Node.js and Express.
 
----
-
-# Setup
-
-Install dependencies:
+## Install Dependencies
 
 ```bash
 npm install
 ```
 
----
-
-# Scripts
-
-## Lint
-
-Runs ESLint on JavaScript files in the `src/` folder.
+## Run ESLint
 
 ```bash
 npm run lint
 ```
 
----
+Checks JavaScript files inside the `src` folder for linting errors.
 
-## Start
-
-Starts the server normally on port `8080`.
+## Start the Server
 
 ```bash
 npm start
 ```
+
+Runs the server normally on port 8080.
 
 Open in browser:
 
@@ -40,125 +30,58 @@ Open in browser:
 http://localhost:8080
 ```
 
----
-
-## Dev
-
-Starts the server in watch mode and automatically restarts when files change.
+## Development Mode
 
 ```bash
 npm run dev
 ```
 
-This uses `.env.debug`:
+Starts the server in watch mode and automatically restarts when files are changed.
 
-```text
-FRAGMENTS_LOG_LEVEL=debug
-```
+Uses environment variables from `.env.debug`.
 
----
-
-## Debug
-
-Starts the server in watch mode with the Node debugger enabled on port `9229`.
+## Debug Mode
 
 ```bash
 npm run debug
 ```
 
-In VS Code use:
+Starts the server in debug mode using the Node inspector.
 
-```text
-Debug via npm run debug
-```
+To debug in VS Code:
+- open Run and Debug
+- select `Debug via npm run debug`
+- add breakpoints in `src/app.js`
 
-Set a breakpoint in `src/app.js`, then open:
+## Test API
 
-```text
-http://localhost:8080
-```
-
----
-
-# Testing the Server
-
-Check API response:
+Basic test:
 
 ```bash
 curl localhost:8080
 ```
 
-Pretty-print JSON:
-
-```bash
-curl -s localhost:8080 | jq
-```
-
-Check response headers:
+Check headers:
 
 ```bash
 curl -i localhost:8080
 ```
 
-Important headers to confirm:
+Pretty-print JSON response:
 
-```text
-Access-Control-Allow-Origin: *
-Cache-Control: no-cache
+```bash
+curl -s localhost:8080 | jq
 ```
 
----
+## Notes
 
-# Expected Response
+Project is developed using WSL Ubuntu.
 
-```json
-{
-  "status": "ok",
-  "description": "fragments service running normally",
-  "author": "Muskaan Mahajan",
-  "githubUrl": "https://github.com/Mhajanmuskaan/fragments",
-  "version": "0.0.1"
-}
-```
-
----
-
-# WSL Notes
-
-This project should be opened from WSL Ubuntu:
+Open project using:
 
 ```bash
 cd ~/CCP555/fragments
 code .
 ```
 
-VS Code should display:
-
-```text
-WSL: Ubuntu
-```
-
-in the bottom-left corner.
-
----
-
-# Project Structure
-
-```text
-fragments/
-├── src/
-│   ├── app.js
-│   ├── logger.js
-│   └── server.js
-├── .vscode/
-│   ├── launch.json
-│   └── settings.json
-├── .env.debug
-├── .gitignore
-├── .prettierignore
-├── .prettierrc
-├── eslint.config.mjs
-├── package.json
-├── package-lock.json
-└── README.md
-```
+VS Code should show `WSL: Ubuntu` in the bottom-left corner.
