@@ -1,32 +1,28 @@
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
+const passport = require('passport');
 
-// author and version from our package.json file
-const { author, version } = require('../package.json');
+const authenticate = require('./auth');
 
 const logger = require('./logger');
 const pino = require('pino-http')({
-  // Use our default logger instance, which is already configured
   logger,
 });
 
-// Create an express app instance we can use to attach middleware and HTTP routes
 const app = express();
 
-// Use pino logging middleware
 app.use(pino);
-
-// Use helmet security middleware
 app.use(helmet());
-
-// Use CORS middleware so we can make requests across origins
 app.use(cors());
+
+// Set up Passport authentication middleware
+passport.use(authenticate.strategy());
+app.use(passport.initialize());
 
 // Use routes
 app.use('/', require('./routes'));
 
-// Add 404 middleware to handle requests for resources that can't be found
 app.use((req, res) => {
   res.status(404).json({
     status: 'error',
@@ -37,13 +33,11 @@ app.use((req, res) => {
   });
 });
 
-// Add error-handling middleware
 // eslint-disable-next-line no-unused-vars
 app.use((err, req, res, next) => {
   const status = err.status || 500;
   const message = err.message || 'unable to process request';
 
-  // Log server errors
   if (status > 499) {
     logger.error({ err }, 'Error processing request');
   }
@@ -57,5 +51,4 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Export our app
 module.exports = app;
