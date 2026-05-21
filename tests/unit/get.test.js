@@ -10,7 +10,7 @@ describe('GET /v1/fragments', () => {
     request(app)
       .get('/v1/fragments')
       .auth('invalid@email.com', 'incorrect_password')
-      .expect(404));
+      .expect(401));
 
   test('authenticated users get a fragments array', async () => {
     const res = await request(app)
