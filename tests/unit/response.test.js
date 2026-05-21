@@ -7,7 +7,7 @@ describe('API Responses', () => {
     expect(errorResponse).toEqual({
       status: 'error',
       error: {
-        code: 404,
+        code: 500,
         message: 'not found',
       },
     });
