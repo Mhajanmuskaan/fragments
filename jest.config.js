@@ -6,9 +6,9 @@ const envFile = path.join(__dirname, 'env.jest');
 require('dotenv').config({ path: envFile });
 
 // Log a message to remind developers how to see more detail from log messages
-console.log(
-  `Using FRAGMENTS_LOG_LEVEL=${process.env.FRAGMENTS_LOG_LEVEL}. Use 'debug' in env.jest for more detail`
-);
+// console.log(
+//   `Using FRAGMENTS_LOG_LEVEL=${process.env.FRAGMENTS_LOG_LEVEL}. Use 'debug' in env.jest for more detail`
+// );
 
 // Set our Jest options
 module.exports = {

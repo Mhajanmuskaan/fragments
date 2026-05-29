@@ -21,4 +21,41 @@ describe('GET /v1/fragments', () => {
     expect(res.body.status).toBe('ok');
     expect(Array.isArray(res.body.fragments)).toBe(true);
   });
+
+  test('authenticated users get fragment ids only by default', async () => {
+    await request(app)
+      .post('/v1/fragments')
+      .auth('test-user1@fragments-testing.com', 'test-password1')
+      .set('Content-Type', 'text/plain')
+      .send('hello');
+
+    const res = await request(app)
+      .get('/v1/fragments')
+      .auth('test-user1@fragments-testing.com', 'test-password1');
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body.status).toBe('ok');
+    expect(Array.isArray(res.body.fragments)).toBe(true);
+    expect(typeof res.body.fragments[0]).toBe('string');
+  });
+
+  test('authenticated users get expanded fragment metadata with expand=1', async () => {
+    await request(app)
+      .post('/v1/fragments')
+      .auth('test-user1@fragments-testing.com', 'test-password1')
+      .set('Content-Type', 'text/plain')
+      .send('hello');
+
+    const res = await request(app)
+      .get('/v1/fragments?expand=1')
+      .auth('test-user1@fragments-testing.com', 'test-password1');
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body.status).toBe('ok');
+    expect(Array.isArray(res.body.fragments)).toBe(true);
+    expect(res.body.fragments[0].id).toBeDefined();
+    expect(res.body.fragments[0].ownerId).toBeDefined();
+    expect(res.body.fragments[0].type).toBe('text/plain');
+    expect(res.body.fragments[0].size).toBe(5);
+  });
 });
