@@ -56,11 +56,28 @@
 
 const { Fragment } = require('../../model/fragment');
 const { createSuccessResponse } = require('../../response');
+const logger = require('../../logger');
 
 module.exports = async (req, res) => {
   const expand = req.query.expand === '1';
 
+  logger.info(
+    {
+      ownerId: req.user,
+      expand,
+    },
+    'Getting user fragments'
+  );
+
   const fragments = await Fragment.byUser(req.user, expand);
+
+  logger.debug(
+    {
+      ownerId: req.user,
+      count: fragments.length,
+    },
+    'Fragments found'
+  );
 
   res.status(200).json(
     createSuccessResponse({

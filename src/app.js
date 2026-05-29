@@ -18,7 +18,7 @@ app.use(helmet());
 app.use(cors());
 
 // Parse plain text request bodies for POST /v1/fragments
-app.use(express.text({ type: 'text/plain' }));
+// app.use(express.text({ type: 'text/plain' }));
 
 // Set up Passport authentication middleware
 passport.use(authenticate.strategy());
