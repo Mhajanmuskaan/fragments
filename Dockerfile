@@ -6,6 +6,7 @@ LABEL maintainer="Muskaan Mahajan <mmahajan11@myseneca.ca>"
 LABEL description="Fragments node.js microservice"
 
 ENV PORT=8080
+
 ENV NPM_CONFIG_LOGLEVEL=warn
 ENV NPM_CONFIG_COLOR=false
 
@@ -13,11 +14,11 @@ WORKDIR /app
 
 COPY package*.json ./
 
-RUN npm install
+RUN npm ci --omit=dev
 
 COPY ./src ./src
 COPY ./tests/.htpasswd ./tests/.htpasswd
 
 EXPOSE 8080
 
-CMD npm start
+CMD ["npm", "start"]
