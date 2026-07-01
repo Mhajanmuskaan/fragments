@@ -14,11 +14,15 @@ const pino = require('pino-http')({
 const app = express();
 
 app.use(pino);
-app.use(helmet());
-app.use(cors());
 
-// Parse plain text request bodies for POST /v1/fragments
-// app.use(express.text({ type: 'text/plain' }));
+app.use(
+  cors({
+    origin: '*',
+    exposedHeaders: ['Location'],
+  })
+);
+
+app.use(helmet());
 
 // Set up Passport authentication middleware
 passport.use(authenticate.strategy());
