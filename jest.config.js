@@ -1,23 +1,26 @@
-// Get the full path to our env.jest file
-const path = require('path');
-const envFile = path.join(__dirname, 'env.jest');
 
-// Read the environment variables we use for Jest from our env.jest file
-require('dotenv').config({ path: envFile });
+// const path = require('path');
+// const envFile = path.join(__dirname, 'env.jest');
 
-// Log a message to remind developers how to see more detail from log messages
-// console.log(
-//   `Using FRAGMENTS_LOG_LEVEL=${process.env.FRAGMENTS_LOG_LEVEL}. Use 'debug' in env.jest for more detail`
-// );
 
-// Set our Jest options
+// require('dotenv').config({ path: envFile });
+
+
+// module.exports = {
+//   verbose: true,
+//   testTimeout: 5000,
+
+//   coverageThreshold: {
+//     global: {
+//       lines: 80,
+//     },
+//   },
+// };
+
+
 module.exports = {
-  verbose: true,
-  testTimeout: 5000,
-
-  coverageThreshold: {
-    global: {
-      lines: 80,
-    },
-  },
+  testEnvironment: 'node',
+  setupFiles: ['<rootDir>/tests/unit/setup-env.js'],
+  collectCoverageFrom: ['src/**/*.js', '!src/index.js', '!src/server.js'],
+  coveragePathIgnorePatterns: ['/node_modules/'],
 };

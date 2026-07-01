@@ -1,10 +1,10 @@
-// // Use crypto.randomUUID() to create unique IDs, see:
-// // https://nodejs.org/api/crypto.html#cryptorandomuuidoptions
+
+
 // const { randomUUID } = require('crypto');
-// // Use https://www.npmjs.com/package/content-type to create/parse Content-Type headers
 // const contentType = require('content-type');
 
-// // Functions for working with fragment metadata/data using our DB
+// const logger = require('../logger');
+
 // const {
 //   readFragment,
 //   writeFragment,
@@ -45,17 +45,22 @@
 //   }
 
 //   static async byUser(ownerId, expand = false) {
-//   const fragments = await listFragments(ownerId, expand);
+//     logger.debug({ ownerId, expand }, 'Reading fragments by user');
 
-//   if (!expand) {
-//     return fragments;
+//     const fragments = await listFragments(ownerId, expand);
+
+//     if (!expand) {
+//       return fragments;
+//     }
+
+//     return fragments.map((fragment) =>
+//       new Fragment(typeof fragment === 'string' ? JSON.parse(fragment) : fragment)
+//     );
 //   }
 
-//   return fragments.map((fragment) =>
-//     new Fragment(typeof fragment === 'string' ? JSON.parse(fragment) : fragment)
-//   );
-// }
 //   static async byId(ownerId, id) {
+//     logger.debug({ ownerId, id }, 'Reading fragment by id');
+
 //     const fragment = await readFragment(ownerId, id);
 
 //     if (!fragment) {
@@ -66,36 +71,56 @@
 //   }
 
 //   static delete(ownerId, id) {
+//     logger.debug({ ownerId, id }, 'Deleting fragment');
+
 //     return deleteFragment(ownerId, id);
 //   }
 
 //   save() {
+//     logger.debug({ ownerId: this.ownerId, id: this.id }, 'Saving fragment metadata');
+
 //     this.updated = new Date().toISOString();
+
 //     return writeFragment(this);
 //   }
 
 //   getData() {
+//     logger.debug({ ownerId: this.ownerId, id: this.id }, 'Reading fragment data');
+
 //     return readFragmentData(this.ownerId, this.id);
 //   }
 
 //   async delete() {
-//   return deleteFragment(this.ownerId, this.id);
-// }
+//     logger.debug({ ownerId: this.ownerId, id: this.id }, 'Deleting fragment');
+
+//     return deleteFragment(this.ownerId, this.id);
+//   }
 
 //   async setData(data) {
 //     if (!Buffer.isBuffer(data)) {
 //       throw new Error('data must be a Buffer');
 //     }
 
+//     logger.debug(
+//       {
+//         ownerId: this.ownerId,
+//         id: this.id,
+//         size: data.length,
+//       },
+//       'Saving fragment data'
+//     );
+
 //     this.size = data.length;
 //     this.updated = new Date().toISOString();
 
 //     await writeFragment(this);
+
 //     return writeFragmentData(this.ownerId, this.id, data);
 //   }
 
 //   get mimeType() {
 //     const { type } = contentType.parse(this.type);
+
 //     return type;
 //   }
 
@@ -114,6 +139,7 @@
 //   static isSupportedType(value) {
 //     try {
 //       const { type } = contentType.parse(value);
+
 //       return type === 'text/plain';
 //     } catch {
 //       return false;
@@ -122,6 +148,9 @@
 // }
 
 // module.exports.Fragment = Fragment;
+
+
+
 
 const { randomUUID } = require('crypto');
 const contentType = require('content-type');
@@ -256,6 +285,18 @@ class Fragment {
       return ['text/plain'];
     }
 
+    if (this.mimeType === 'text/markdown') {
+      return ['text/markdown', 'text/html', 'text/plain'];
+    }
+
+    if (this.mimeType === 'application/json') {
+      return ['application/json', 'text/plain'];
+    }
+
+    if (this.isText) {
+      return [this.mimeType, 'text/plain'];
+    }
+
     return [];
   }
 
@@ -263,7 +304,7 @@ class Fragment {
     try {
       const { type } = contentType.parse(value);
 
-      return type === 'text/plain';
+      return type.startsWith('text/') || type === 'application/json';
     } catch {
       return false;
     }
