@@ -25,6 +25,7 @@ WORKDIR /app
 COPY --from=dependencies /app/node_modules ./node_modules
 COPY package*.json ./
 COPY ./src ./src
+COPY ./tests/.htpasswd ./tests/.htpasswd
 
 EXPOSE 8080
 
