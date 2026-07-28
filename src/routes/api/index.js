@@ -21,6 +21,7 @@ const rawBody = () =>
 
 router.get('/fragments', require('./get'));
 router.post('/fragments', rawBody(), require('./post'));
+router.put('/fragments/:id', rawBody(), require('./put'));
 router.get('/fragments/:id/info', require('./get-info'));
 router.delete('/fragments/:id', require('./delete'));
 router.get('/fragments/:id', require('./get-by-id'));
