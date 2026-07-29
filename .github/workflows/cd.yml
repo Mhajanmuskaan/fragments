@@ -49,3 +49,36 @@ jobs:
         with:
           push: true
           tags: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPO }}:${{ env.VERSION_TAG }}, ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPO }}:latest
+
+      - name: Download current Amazon ECS task definition
+        run: |
+          aws ecs describe-task-definition \
+            --task-definition fragments-task \
+            --query taskDefinition \
+            > task-definition.json
+
+          jq 'del(
+            .taskDefinitionArn,
+            .revision,
+            .status,
+            .requiresAttributes,
+            .compatibilities,
+            .registeredAt,
+            .registeredBy
+          )' task-definition.json > task-definition-clean.json
+
+      - name: Render Amazon ECS task definition
+        id: render-task-definition
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: task-definition-clean.json
+          container-name: fragments-container
+          image: ${{ steps.login-ecr.outputs.registry }}/fragments:${{ github.ref_name }}
+
+      - name: Deploy to Amazon ECS
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+        with:
+          task-definition: ${{ steps.render-task-definition.outputs.task-definition }}
+          service: fragments-service
+          cluster: fragments-cluster
+          wait-for-service-stability: true
